@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Project Portal - Login</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
+        body{
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+            background:linear-gradient(135deg,#4facfe,#00f2fe);
+        }
+        .card{
+            width:360px;
+            background:#fff;
+            padding:35px;
+            border-radius:12px;
+            box-shadow:0 10px 20px rgba(0,0,0,.2);
+        }
+        h2{text-align:center;margin-bottom:20px;}
+        input,button{
+            width:100%;
+            padding:12px;
+            margin:10px 0;
+            border-radius:6px;
+            border:1px solid #ccc;
+        }
+        button{
+            background:#2196f3;
+            color:white;
+            border:none;
+            cursor:pointer;
+        }
+        button:hover{
+            background:#1976d2;
+        }
+        a{
+            color:#2196f3;
+            text-decoration:none;
+            font-weight:bold;
+            cursor:pointer;
+            position:relative;
+            z-index:9999;
+        }
+        p{
+            position:relative;
+            z-index:9999;
+        }
+        .error{
+            color:red;
+            text-align:center;
+            margin-bottom:10px;
+        }
+        p{text-align:center;margin-top:15px;}
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <h2>Login</h2>
+
+    <div class="error" th:if="${error}" th:text="${error}"></div>
+
+    <form th:action="@{/login}" method="post">
+
+        <input type="text"
+               name="username"
+               placeholder="Username"
+               required>
+
+        <input type="password"
+               name="password"
+               placeholder="Password"
+               required>
+
+        <button type="submit">
+            Login
+        </button>
+
+    </form>
+
+    <div style="margin-top:2px;">
+        New User?
+        <a th:href="@{/register}">Register Here</a>
+    </div>
+
+</div>
+
+</body>
+</html>

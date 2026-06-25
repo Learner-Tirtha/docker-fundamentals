@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Faculty Portal</title>
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, Helvetica, sans-serif;
+        }
+
+        body{
+            background:#f4f7fc;
+            padding:30px;
+        }
+
+        .container{
+            max-width:1200px;
+            margin:auto;
+        }
+
+        /* Header */
+        .header{
+            background:linear-gradient(135deg,#4facfe,#00c6fb);
+            color:white;
+            padding:20px 30px;
+            border-radius:10px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            box-shadow:0 4px 12px rgba(0,0,0,.2);
+        }
+
+        .logout-btn{
+            text-decoration:none;
+            background:#ff4d4d;
+            color:white;
+            padding:10px 18px;
+            border-radius:6px;
+            font-weight:bold;
+            transition:.3s;
+        }
+
+        .logout-btn:hover{
+            background:#d60000;
+        }
+
+        /* Cards */
+        .card{
+            background:white;
+            margin-top:25px;
+            padding:20px;
+            border-radius:10px;
+            box-shadow:0 4px 10px rgba(0,0,0,.1);
+        }
+
+        .card h3{
+            margin-bottom:20px;
+            color:#333;
+        }
+
+        /* Form */
+        .project-form{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+            gap:15px;
+        }
+
+        .project-form input{
+            padding:12px;
+            border:1px solid #ccc;
+            border-radius:6px;
+            font-size:15px;
+            outline:none;
+            transition:.3s;
+        }
+
+        .project-form input:focus{
+            border-color:#4facfe;
+            box-shadow:0 0 5px rgba(79,172,254,.5);
+        }
+
+        .project-form button{
+            background:#28a745;
+            color:white;
+            border:none;
+            padding:12px;
+            border-radius:6px;
+            cursor:pointer;
+            font-size:15px;
+            transition:.3s;
+        }
+
+        .project-form button:hover{
+            background:#218838;
+        }
+
+        /* Table */
+        table{
+            width:100%;
+            border-collapse:collapse;
+        }
+
+        th{
+            background:#4facfe;
+            color:white;
+            padding:12px;
+        }
+
+        td{
+            padding:12px;
+            border-bottom:1px solid #ddd;
+            text-align:center;
+        }
+
+        tr:nth-child(even){
+            background:#f9f9f9;
+        }
+
+        tr:hover{
+            background:#eef7ff;
+        }
+
+        /* Delete Button */
+        .delete-btn{
+            background:#dc3545;
+            color:white;
+            border:none;
+            padding:8px 15px;
+            border-radius:5px;
+            cursor:pointer;
+            transition:.3s;
+        }
+
+        .delete-btn:hover{
+            background:#b52a37;
+        }
+
+        .count{
+            color:#4facfe;
+            font-size:20px;
+            font-weight:bold;
+        }
+
+        @media(max-width:900px){
+
+            .header{
+                flex-direction:column;
+                gap:15px;
+                text-align:center;
+            }
+
+            table{
+                display:block;
+                overflow-x:auto;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Header -->
+    <div class="header">
+
+        <div>
+            <h2>Faculty Hub Dashboard</h2>
+            <h3>
+                Welcome, Professor
+                <span th:text="${faculty.name}">Faculty</span>!
+            </h3>
+            <p>
+                <strong>Department:</strong>
+                <span th:text="${faculty.department}">Dept</span>
+            </p>
+        </div>
+
+        <div style="text-align:right;">
+            <p>
+                Total Projects:
+                <span class="count"
+                      th:text="${totalProjectsInSystem}">0</span>
+            </p>
+            <br>
+            <a href="/logout" class="logout-btn">Logout</a>
+        </div>
+
+    </div>
+
+    <!-- Add Project -->
+    <div class="card">
+
+        <h3>Propose New Project</h3>
+
+        <form action="/project/add" method="POST" class="project-form">
+
+            <input type="text"
+                   name="title"
+                   placeholder="Project Title"
+                   required>
+
+            <input type="text"
+                   name="tech"
+                   placeholder="Technology Stack"
+                   required>
+
+            <input type="text"
+                   name="desc"
+                   placeholder="Brief Description"
+                   required>
+
+            <input type="number"
+                   step="0.5"
+                   name="duration"
+                   placeholder="Duration (Years)"
+                   required>
+
+            <input type="number"
+                   name="positions"
+                   placeholder="Available Positions"
+                   required>
+
+            <button type="submit">
+                Publish Proposal
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- Projects -->
+    <div class="card">
+
+        <h3>Your Managed Projects</h3>
+
+        <table>
+
+            <thead>
+            <tr>
+                <th>Project Title</th>
+                <th>Technology</th>
+                <th>Description</th>
+                <th>Duration</th>
+                <th>Available Slots</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr th:each="p : ${projects}">
+
+                <td th:text="${p.projectTitle}"></td>
+
+                <td th:text="${p.technology}"></td>
+
+                <td th:text="${p.description}"></td>
+
+                <td th:text="${p.duration} + ' Year(s)'"></td>
+
+                <td th:text="${p.emptyPosition}"></td>
+
+                <td>
+
+                    <form th:action="@{/project/delete/{id}(id=${p.projectId})}" method="post">
+                        <button type="submit" class="delete-btn">
+                            Delete
+                        </button>
+                    </form>
+
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>

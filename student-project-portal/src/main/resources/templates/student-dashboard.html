@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Student Portal</title>
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, Helvetica, sans-serif;
+        }
+
+        body{
+            background:#f4f7fc;
+            padding:30px;
+        }
+
+        .container{
+            max-width:1200px;
+            margin:auto;
+        }
+
+        .header{
+            background:linear-gradient(135deg,#4facfe,#00c6fb);
+            color:white;
+            padding:20px 30px;
+            border-radius:10px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            box-shadow:0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .header h2{
+            margin-bottom:5px;
+        }
+
+        .logout-btn{
+            text-decoration:none;
+            color:white;
+            background:#ff4d4d;
+            padding:10px 18px;
+            border-radius:6px;
+            transition:.3s;
+            font-weight:bold;
+        }
+
+        .logout-btn:hover{
+            background:#e60000;
+        }
+
+        .profile{
+            margin-top:25px;
+            background:white;
+            padding:20px;
+            border-radius:10px;
+            box-shadow:0 4px 10px rgba(0,0,0,.1);
+        }
+
+        .profile h3{
+            color:#333;
+            margin-bottom:10px;
+        }
+
+        .projects{
+            margin-top:30px;
+            background:white;
+            padding:20px;
+            border-radius:10px;
+            box-shadow:0 4px 10px rgba(0,0,0,.1);
+        }
+
+        .projects h3{
+            margin-bottom:20px;
+            color:#333;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+        }
+
+        th{
+            background:#4facfe;
+            color:white;
+            padding:12px;
+        }
+
+        td{
+            padding:12px;
+            border-bottom:1px solid #ddd;
+            text-align:center;
+        }
+
+        tr:nth-child(even){
+            background:#f8f9fa;
+        }
+
+        tr:hover{
+            background:#eef7ff;
+        }
+
+        button{
+            background:#28a745;
+            color:white;
+            border:none;
+            padding:8px 16px;
+            border-radius:5px;
+            cursor:pointer;
+            transition:.3s;
+        }
+
+        button:hover{
+            background:#218838;
+        }
+
+        .closed{
+            color:red;
+            font-weight:bold;
+        }
+
+        @media(max-width:900px){
+
+            table{
+                display:block;
+                overflow-x:auto;
+            }
+
+            .header{
+                flex-direction:column;
+                text-align:center;
+                gap:15px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <div>
+            <h2>Student Hub Dashboard</h2>
+            <h3>Welcome,
+                <span th:text="${student.name}">Student</span>!
+            </h3>
+        </div>
+
+        <a href="/logout" class="logout-btn">Logout</a>
+    </div>
+
+    <div class="profile">
+        <h3>Student Information</h3>
+
+        <p>
+            <strong>Student ID:</strong>
+            <span th:text="${student.idNo}">ID</span>
+        </p>
+
+        <p>
+            <strong>ABC ID:</strong>
+            <span th:text="${student.abcID}">ABC</span>
+        </p>
+    </div>
+
+    <div class="projects">
+
+        <h3>Available Project Registry Matrix</h3>
+
+        <table>
+
+            <thead>
+            <tr>
+                <th>Project Title</th>
+                <th>Technology</th>
+                <th>Description</th>
+                <th>Duration</th>
+                <th>Open Slots</th>
+                <th>Mentor</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr th:each="p : ${projects}">
+
+                <td th:text="${p.projectTitle}"></td>
+
+                <td th:text="${p.technology}"></td>
+
+                <td th:text="${p.description}"></td>
+
+                <td th:text="${p.duration} + ' Year(s)'"></td>
+
+                <td th:text="${p.emptyPosition}"></td>
+
+                <td th:text="${p.faculty.name}"></td>
+
+                <td>
+
+                    <form
+                            th:action="@{/project/apply/{id}(id=${p.projectId})}"
+                            method="POST"
+                            th:if="${p.emptyPosition > 0}">
+
+                        <button type="submit">
+                            Apply Instantly
+                        </button>
+
+                    </form>
+
+                    <span
+                            class="closed"
+                            th:if="${p.emptyPosition <= 0}">
+                        Closed / Full
+                    </span>
+
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>
