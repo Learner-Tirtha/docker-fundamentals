@@ -3,7 +3,7 @@
 ############################
 # 1. Build stage
 ############################
-# Every From take as new Stage .Last Stage is default Final Image 
+# Every From take as new Stage .Last Stage is default Final Image
 FROM eclipse-temurin:21-jdk-jammy AS build
 # Create the directory build and do cd build
 WORKDIR /build
